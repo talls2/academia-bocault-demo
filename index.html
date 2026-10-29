@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-sem-admin>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1565,13 +1565,18 @@ h1, h2, h3 { font-weight: 400; }
     updatePreview();
     updatePlanPreview();
   }
+  // The public copy on GitHub Pages is built with data-sem-admin: it shows the public page and the student area only.
+  const SEM_ADMIN = document.documentElement.hasAttribute("data-sem-admin");
+  if (SEM_ADMIN) document.getElementById("v-admin")?.remove();
+  const VIEWS = SEM_ADMIN ? ["publico", "aluno"] : ["publico", "aluno", "admin"];
   function go(view) {
+    if (!VIEWS.includes(view)) view = "publico";
     state.view = view;
     try { history.replaceState(null, "", "#" + view); } catch (e) {}
     render(); window.scrollTo(0, 0);
   }
   const startHash = (location.hash || "").slice(1);
-  if (["publico", "aluno", "admin"].includes(startHash)) state.view = startHash;
+  if (VIEWS.includes(startHash)) state.view = startHash;
 
   document.addEventListener("click", (e) => {
     const t = e.target.closest("button, [data-closemodal]");
